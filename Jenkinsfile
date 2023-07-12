@@ -67,7 +67,6 @@ pipeline {
                 //     sh 'kubectl apply -f mysql.yml && sleep 10'
                 //     sh 'kubectl apply -f sparklms.yml'
                 // }
-            }
         }
     }
 }
