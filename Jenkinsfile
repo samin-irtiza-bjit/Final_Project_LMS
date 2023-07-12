@@ -34,6 +34,7 @@ pipeline {
                    
                     withDockerRegistry([ credentialsId: "dockerhub-login", url: "" ]) {
                         new_image.push()
+                        new_image.push('latest')
                     }
                     sh "docker rmi -f ${env.IMAGE_NAME}"
                 }
