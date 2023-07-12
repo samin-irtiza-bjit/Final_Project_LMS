@@ -4,10 +4,14 @@ pipeline {
        // poll repo every 2 minute for changes
        pollSCM('H/3 * * * *')
    }
+    environment {
+        GIT_REPO = 'https://github.com/samin-irtiza-bjit/Final_Project_LMS.git'
+        IMAGE_NAME= "saminbjit/sparklms:${env.BUILD_NUMBER}"
+    }
     stages {
         stage('Git Pull') {
             steps {
-                git branch: 'main', url: 'https://github.com/samin-irtiza-bjit/Final_Project_LMS.git'
+                git branch: 'main', url: env.GIT_REPO 
             }
         }
         
@@ -20,8 +24,7 @@ pipeline {
         stage('Build Image') {
             steps{
                 script{
-                    def imageName="saminbjit/sparklms:${BUILD_NUMBER}"
-                    new_image=docker.build("${imageName}")
+                    new_image=docker.build(${env.IMAGE_NAME})
                 }
             }
         }
@@ -32,7 +35,7 @@ pipeline {
                     withDockerRegistry([ credentialsId: "dockerhub-login", url: "" ]) {
                         new_image.push()
                     }
-                    sh "docker rmi ${imageName}"
+                    sh "docker rmi -f ${env.IMAGE_NAME}"
                 }
             }
         }
