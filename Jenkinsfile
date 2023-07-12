@@ -32,7 +32,7 @@ pipeline {
                     withDockerRegistry([ credentialsId: "dockerhub-login", url: "" ]) {
                         new_image.push()
                     }
-                    new_image.remove()
+                    sh "docker rmi ${imageName}"
                 }
             }
         }
