@@ -40,15 +40,33 @@ pipeline {
                 }
             }
         }
-        
-        stage('Deploy in Kubernetes'){
-            steps{
-                kubeconfig(caCertificate: 'f', credentialsId: 'kubeconfig', serverUrl: '') {
-                    sh 'kubectl delete -f mysql.yml 2>/dev/null || true'
-                    sh 'kubectl delete -f sparklms.yml 2>/dev/null || true'
-                    sh 'kubectl apply -f mysql.yml && sleep 10'
-                    sh 'kubectl apply -f sparklms.yml'
+        stage('Cleanup & Deployment'){
+            parallel {
+                stage('Docker Cleanup') {
+                    steps {
+                        sh 'docker system prune -f'
+                        sh 'docker image prune -f'
+                        sh 'docker volume prune -f'
+                        sh 'docker container prune -f'
+                    }
                 }
+                stage('Kubernetes Deployment'){
+                    steps {
+                        kubeconfig(caCertificate: 'f', credentialsId: 'kubeconfig', serverUrl: '') {
+                            sh 'kubectl delete -f mysql.yml 2>/dev/null || true'
+                            sh 'kubectl delete -f sparklms.yml 2>/dev/null || true'
+                            sh 'kubectl apply -f mysql.yml && sleep 10'
+                            sh 'kubectl apply -f sparklms.yml'
+                        }
+                    }
+                }
+            }
+                // kubeconfig(caCertificate: 'f', credentialsId: 'kubeconfig', serverUrl: '') {
+                //     sh 'kubectl delete -f mysql.yml 2>/dev/null || true'
+                //     sh 'kubectl delete -f sparklms.yml 2>/dev/null || true'
+                //     sh 'kubectl apply -f mysql.yml && sleep 10'
+                //     sh 'kubectl apply -f sparklms.yml'
+                // }
             }
         }
     }
