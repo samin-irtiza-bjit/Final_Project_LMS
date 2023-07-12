@@ -20,7 +20,8 @@ pipeline {
         stage('Build Image') {
             steps{
                 script{
-                    new_image=docker.build("saminbjit/sparklms")
+                    def imageName="saminbjit/sparklms:${BUILD_NUMBER}"
+                    new_image=docker.build("${imageName}")
                 }
             }
         }
