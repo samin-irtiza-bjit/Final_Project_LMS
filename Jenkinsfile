@@ -37,8 +37,10 @@ pipeline {
         
         stage('Deploy in Kubernetes'){
             steps{
-                sh 'kubectl apply -f mysql.yml && sleep 10'
-                sh 'kubectl apply -f sparklms.yml'
+                kubeconfig(caCertificate: 'f', credentialsId: 'kubeconfig', serverUrl: '') {
+                    sh 'kubectl apply -f mysql.yml && sleep 10'
+                    sh 'kubectl apply -f sparklms.yml'
+                }
             }
         }
     }
