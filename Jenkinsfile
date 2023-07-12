@@ -38,8 +38,8 @@ pipeline {
         stage('Deploy in Kubernetes'){
             steps{
                 kubeconfig(caCertificate: 'f', credentialsId: 'kubeconfig', serverUrl: '') {
-                    sh 'kubectl delete -f mysql.yml 2>/dev/null'
-                    sh 'kubectl delete -f sparklms.yml 2>/dev/null'
+                    sh 'kubectl delete -f mysql.yml 2>/dev/null || true'
+                    sh 'kubectl delete -f sparklms.yml 2>/dev/null || true'
                     sh 'kubectl apply -f mysql.yml && sleep 10'
                     sh 'kubectl apply -f sparklms.yml'
                 }
