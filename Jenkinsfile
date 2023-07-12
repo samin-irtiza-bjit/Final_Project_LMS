@@ -6,7 +6,8 @@ pipeline {
    }
     environment {
         GIT_REPO = 'https://github.com/samin-irtiza-bjit/Final_Project_LMS.git'
-        IMAGE_NAME= "saminbjit/sparklms:${env.BUILD_NUMBER}"
+        IMAGE_NAME= "saminbjit/sparklms"
+        IMAGE_TAG= "${env.BUILD_NUMBER}"
     }
     stages {
         stage('Git Pull') {
@@ -36,7 +37,6 @@ pipeline {
                         new_image.push()
                         new_image.push('latest')
                     }
-                    sh "docker rmi -f ${env.IMAGE_NAME}"
                 }
             }
         }
@@ -44,10 +44,9 @@ pipeline {
             parallel {
                 stage('Docker Cleanup') {
                     steps {
+                        sh "docker rmi -f ${env.IMAGE_NAME}:${env.IMAGE_TAG}"
+                        sh "docker rmi -f ${env.IMAGE_NAME}:latest"
                         sh 'docker system prune -f'
-                        sh 'docker image prune -f'
-                        sh 'docker volume prune -f'
-                        sh 'docker container prune -f'
                     }
                 }
                 stage('Kubernetes Deployment'){
