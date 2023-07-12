@@ -25,7 +25,16 @@ spec:
       storage: 1Gi
   volumeName: mysql-pv
   storageClassName: standard
-
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  MYSQL_USER: bG1zYWRtaW4=
+  MYSQL_PASSWORD: bG1zcGFzcw==
+  MYSQL_DATABASE: c3BhcmtsbXNkYg==
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -52,12 +61,26 @@ spec:
             - name: MYSQL_ALLOW_EMPTY_PASSWORD
               value: 'yes'
             - name: MYSQL_USER
-              value: 'lmsadmin'
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_USER
             - name: MYSQL_PASSWORD
-              value: 'lmspass'
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_PASSWORD
             - name: MYSQL_DATABASE
-              value: 'sparklmsdb'
-
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-secret
+                  key: MYSQL_DATABASE
+            # - name: MYSQL_USER
+            #   value: 'lmsadmin'
+            # - name: MYSQL_PASSWORD
+            #   value: 'lmspass'
+            # - name: MYSQL_DATABASE
+            #   value: 'sparklmsdb'
           ports:
             - containerPort: 3306 
           volumeMounts:
@@ -81,5 +104,4 @@ spec:
     port: 3306 
     targetPort: 3306
   type: ClusterIP
-
 
