@@ -58,9 +58,8 @@ pipeline {
                         //sh killCommand
                         //def sshCommand="ssh -i ${identity} -o StrictHostKeyChecking=no  ${userName}@${EC2_HOST} 'java -jar /tmp/spark-lms-0.0.1-SNAPSHOT.jar &>/dev/null &'"
                         //sh sshCommand
-                        // def disownCommand="ssh -i ${identity} -o StrictHostKeyChecking=no  ${userName}@${EC2_HOST} 'disown'"
-                        // sh disownCommand
-                        sh 'systemctl restart jarrunner.service'
+                        // def restartServiceCommand="ssh -i ${identity} -o StrictHostKeyChecking=no  ${userName}@${EC2_HOST} 'systemctl restart jarrunner.service'"
+                        // sh restartServiceCommand
                     }
                 }
                 
