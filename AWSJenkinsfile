@@ -25,6 +25,7 @@ pipeline {
         }
 
         stage('Write Service File'){
+            script{
             sh "'cat <<EOF | sudo tee /etc/systemd/system/jarrunner.service
                 [Unit]
                 Description=Spark LMS
@@ -41,7 +42,7 @@ pipeline {
                 [Install]
                 WantedBy=multi-user.target
                 EOF'"
-            
+           } 
         }
         stage('Deploy to EC2'){
             steps{
