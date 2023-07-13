@@ -5,7 +5,7 @@ pipeline {
        pollSCM('H/3 * * * *')
    }
     environment {
-        GIT_REPO = 'https://github.com/samin-irtiza-bjit/Final_Project_LMS.git'
+        GIT_REPO = 'git@github.com:samin-irtiza-bjit/Final_Project_LMS.git'
         IMAGE_NAME= "saminbjit/sparklms"
         IMAGE_TAG= "${env.BUILD_NUMBER}"
     }
