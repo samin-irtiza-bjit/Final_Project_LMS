@@ -12,7 +12,8 @@ pipeline {
     stages {
         stage('Git Pull') {
             steps {
-                git branch: 'main', url: env.GIT_REPO 
+                git branch: 'main', credentialsId: 'github-key', url: env.GIT_REPO
+                // git branch: 'main', url: env.GIT_REPO 
             }
         }
         
