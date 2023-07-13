@@ -23,7 +23,27 @@ pipeline {
                 sh './mvnw clean install'
             }
         }
-        
+
+        stage('Write Service File'){
+            sh 'cat <<EOF | sudo tee /etc/systemd/system/jarrunner.service
+                [Unit]
+                Description=Spark LMS
+                
+                [Service]
+                User=ec2-user
+                WorkingDirectory=/tmp
+                ExecStart=/usr/bin/java -jar spark-lms-0.0.1-SNAPSHOT.jar
+                SuccessExitStatus=143
+                TimeoutStopSec=10
+                Restart=on-failure
+                RestartSec=30
+                
+                [Install]
+                WantedBy=multi-user.target
+                EOF
+                '
+            
+        }
         stage('Deploy to EC2'){
             steps{
                 script{
@@ -37,6 +57,7 @@ pipeline {
                         sh sshCommand
                         // def disownCommand="ssh -i ${identity} -o StrictHostKeyChecking=no  ${userName}@${EC2_HOST} 'disown'"
                         // sh disownCommand
+                        sh 'systemctl restart jarrunner.service'
                     }
                 }
                 
