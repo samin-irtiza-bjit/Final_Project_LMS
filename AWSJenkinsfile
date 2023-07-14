@@ -24,7 +24,6 @@ pipeline {
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2', keyFileVariable: 'identity', passphraseVariable: 'passPhrase', usernameVariable: 'userName')]) {
                         def writeService="scp -i ${identity} -o StrictHostKeyChecking=no \$(pwd)/jarrunner.service  ${userName}@${EC2_HOST}:/tmp"
                         sh writeService
-                        def 
                         }
                     sshagent(credentialsId: 'aws-ec2'){
                         sh '''
