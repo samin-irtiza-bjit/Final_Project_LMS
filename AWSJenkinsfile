@@ -25,7 +25,7 @@ pipeline {
                         def writeService="scp -i ${identity} -o StrictHostKeyChecking=no \$(pwd)/jarrunner.service  ${userName}@${EC2_HOST}:/tmp"
                         sh writeService
                         }
-                    sshagent(credentials: 'aws-ec2'){
+                    sshagent(credentials: ['aws-ec2']){
                         sh '''
                             sudo cp /tmp/jarrunner.service etc/systemd/system/multi-user.target.wants
                         '''
