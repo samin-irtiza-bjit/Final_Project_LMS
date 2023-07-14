@@ -4,6 +4,9 @@ pipeline {
        // poll repo every 2 minute for changes
        pollSCM('H/3 * * * *')
    }
+    tools{
+        maven 'Maven-3.9.3'
+    }
     environment {
         GIT_REPO = 'git@github.com:samin-irtiza-bjit/Final_Project_LMS.git'
         EC2_HOST = '34.217.178.107'
@@ -35,8 +38,8 @@ pipeline {
         }
         stage('Build Application'){
             steps{
-                sh 'chmod +x mvnw'
-                sh './mvnw clean install'
+                //sh 'chmod +x mvnw'
+                sh 'mvn clean install'
             }
         }
 
@@ -77,5 +80,10 @@ pipeline {
                 // }
             }
         }
+    post { 
+        always { 
+            cleanWs()
+        }
+    }
     }
 }
