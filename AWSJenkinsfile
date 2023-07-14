@@ -45,7 +45,9 @@ pipeline {
                             [Install]\
                             WantedBy=multi-user.target\
                             EOF'"
+                        sh writeService
                         }
+                    
                 }
             }
         }
