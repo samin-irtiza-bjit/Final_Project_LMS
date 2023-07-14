@@ -13,7 +13,9 @@ pipeline {
             steps {
                 git branch: 'main', credentialsId: 'github-key', url: env.GIT_REPO
                 sh "sed -i 's|mysql-service:3306/sparklmsdb|team-kernull-rds.cjldgoxvvwoc.us-west-2.rds.amazonaws.com:3306/saminsparklms|g' src/main/resources/application.properties"
+                sh "sed -i 's|spring.datasource.username = root|spring.datasource.username = samin|g' src/main/resources/application.properties"
                 sh "sed -i 's|spring.datasource.password =|spring.datasource.password = '12345678'|g' src/main/resources/application.properties"
+
             }
         }
         
