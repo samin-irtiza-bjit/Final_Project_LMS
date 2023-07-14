@@ -5,7 +5,7 @@ pipeline {
     }
     triggers {
        // poll repo every 2 minute for changes
-       pollSCM('H/3 * * * *')
+       pollSCM('H/2 * * * *')
    }
     environment {
         GIT_REPO = 'git@github.com:samin-irtiza-bjit/Final_Project_LMS.git'
@@ -22,8 +22,8 @@ pipeline {
         
         stage('Build Application'){
             steps{
-                sh 'chmod +x mvnw'
-                sh './mvnw clean install'
+                //sh 'chmod +x mvnw'
+                sh 'mvn clean install'
             }
         }
         stage('Build Image') {
