@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools{
+        maven 'Maven-3.9.3'
+    }
     triggers {
        // poll repo every 2 minute for changes
        pollSCM('H/3 * * * *')
