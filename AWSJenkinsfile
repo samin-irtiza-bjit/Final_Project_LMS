@@ -29,22 +29,7 @@ pipeline {
             steps{
                 script{
                     withCredentials([sshUserPrivateKey(credentialsId: 'aws-ec2', keyFileVariable: 'identity', passphraseVariable: 'passPhrase', usernameVariable: 'userName')]) {
-                        def writeService="ssh -i ${identity} -o StrictHostKeyChecking=no  ${userName}@${EC2_HOST} 'cat <<EOF | sudo tee /etc/systemd/system/multi-user.target.wants/jarrunner.service\
-                            [Unit]\
-                            Description=Spark LMS\
-                            \
-                            [Service]\
-                            User=ec2-user\
-                            WorkingDirectory=/tmp\
-                            ExecStart=/usr/bin/java -jar spark-lms-0.0.1-SNAPSHOT.jar\
-                            SuccessExitStatus=143\
-                            TimeoutStopSec=10\
-                            Restart=on-failure\
-                            RestartSec=30\
-                            \
-                            [Install]\
-                            WantedBy=multi-user.target\
-                            EOF'"
+                        def writeService="scp -i ${identity} -o StrictHostKeyChecking=no \$(pwd)/jarruner.service  ${userName}@${EC2_HOST}:/etc/systemd/system/multi-user.target.wants"
                         sh writeService
                         }
                     
