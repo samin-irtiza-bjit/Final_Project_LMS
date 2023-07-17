@@ -5,6 +5,13 @@
   become: yes
 
   tasks:
+    - name: Copy JAR Artifact to remote host
+      copy:
+        src: "{{item}}"
+        dest: /tmp/
+      with_fileglob:
+        - "{{ playbook_dir }}/../target/*.jar"
+
     - name: Write service file
       copy:
         content: |
