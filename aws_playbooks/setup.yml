@@ -1,0 +1,17 @@
+---
+- name: Install and setup JDK and MySQL client
+  hosts: ec2
+  remote_user: ec2-user
+  become: yes
+
+  tasks:
+    - name: Install JDK-1.8
+      package: 
+        name: java-1.8.0-openjdk.x86_64
+        state: present
+
+    - name: Install MySQL Client
+      package: 
+        name: mariadb
+        state: present
+      

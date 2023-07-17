@@ -1,0 +1,24 @@
+---
+- name: Update Inventory file with new IP
+  hosts: localhost
+  become: yes
+
+  vars:
+    instance_id: 'i-047c8d25b5c7151d0'
+  tasks:
+    - name: Fetch Instance IP using AWS CLI
+      shell: aws ec2 describe-instances --instance-ids {{instance_id}} --query 'Reservations[0].Instances[0].PublicIpAddress'
+      register: new_ip
+    
+    - name: Check if [ec2] exists in inventory file
+      shell: grep -A1 '[ec2]' /etc/ansible/hosts | tail -n 1
+      register: ec2_ip
+      changed_when: false
+
+    - name: Replace old IP with new IP in inventory file
+      ansible.builtin.lineinfile:
+        path: /etc/ansible/hosts
+        regexp: "^{{ ec2_ip.stdout }}$"
+        line: "{{ new_ip.stdout }}"
+        state: present
+      when: ec2_ip.stdout != "" and ec2_ip.stdout is match("[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}")
