@@ -5,7 +5,7 @@ pipeline {
     }
     triggers {
        // poll repo every 2 minute for changes
-       pollSCM('H/2 * * * *')
+       // pollSCM('H/2 * * * *')
         githubPush()
    }
     environment {
