@@ -6,6 +6,7 @@ pipeline {
     triggers {
        // poll repo every 2 minute for changes
        pollSCM('H/2 * * * *')
+        githubPush()
    }
     environment {
         GIT_REPO = 'git@github.com:samin-irtiza-bjit/Final_Project_LMS.git'
