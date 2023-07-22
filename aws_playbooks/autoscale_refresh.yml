@@ -9,6 +9,8 @@
     ami_description: An image of samin-ec2
     lt_name: samin-lt
     asg_name: samin-asg
+    key_pair_name: samin-key
+    security_group_id: sg-01a91ebf9c5789cf7
   tasks:
     - name: Get list of AMI IDs
       shell: >
@@ -44,12 +46,19 @@
 
     - name: Update Launch template with new AMI
       shell: >
-        aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\", \"InstanceType\":\"t2.micro\"}"
+        aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\", \"InstanceType\":\"t2.micro\", \"KeyName\":\"{{ key_pair_name }}\", \"SecurityGroupIds\": [\"{{ security_group_id }}\"]}"
       register: lt_version
       changed_when: False
+      
     # - name: Update Launch template with new AMI
     #   shell: >
-    #     aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\"}"
+    #     aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\", \"InstanceType\":\"t2.micro\", \"KeyName\":\"{{ key_pair_name }}\"}"
+    #   register: lt_version
+    #   changed_when: False
+
+    # - name: Update Launch template with new AMI
+    #   shell: >
+    #     aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\", \"InstanceType\":\"t2.micro\"}"
     #   register: lt_version
     #   changed_when: False
       
