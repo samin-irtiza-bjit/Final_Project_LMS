@@ -39,7 +39,7 @@ pipeline {
                 script{
                    
                     withDockerRegistry([ credentialsId: "dockerhub-login", url: "" ]) {
-                        new_image.push()
+                        new_image.push("${env.IMAGE_TAG}")
                         new_image.push('latest')
                     }
                 }
