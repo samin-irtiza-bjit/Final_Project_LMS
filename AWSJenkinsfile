@@ -41,6 +41,11 @@ pipeline {
                 sh 'ansible-playbook aws_playbooks/deploy.yml'
             }
         }
+        stage('Refresh Autoscaled Instances'){
+            steps{
+                sh 'ansible-playbook aws_playbooks/autoscale_refresh.yml'
+            }        
+        }
     }
     post { 
         always { 
