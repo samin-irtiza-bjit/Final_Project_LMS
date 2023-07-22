@@ -1,0 +1,69 @@
+---
+- hosts: localhost
+  gather_facts: False
+  vars:
+    region: us-west-2
+    owner: Samin Irtiza
+    instance_id: i-047c8d25b5c7151d0
+    ami_name: samin-ec2-ami
+    ami_description: An image of samin-ec2
+    lt_name: samin-lt
+    asg_name: samin-asg
+  tasks:
+    - name: Get list of AMI IDs
+      shell: >
+        aws ec2 describe-images --region {{ region }} --filters "Name=tag:Owner,Values={{ owner }}" --query 'Images[*].[ImageId]' --output text
+      register: ami_ids
+      changed_when: False
+
+    - name: Deregister AMIs and delete associated snapshots
+      shell: >
+        Snapshots="$(aws ec2 describe-images --image-ids {{ item }} --region {{ region }} --query 'Images[*].BlockDeviceMappings[*].Ebs.SnapshotId' --output text)" &&
+        aws ec2 deregister-image --region {{ region }} --image-id {{ item }} &&
+        for SNAPSHOT in $Snapshots; do aws ec2 delete-snapshot --region {{ region }} --snapshot-id $SNAPSHOT; done
+      with_items: "{{ ami_ids.stdout_lines }}"
+
+    # - name: Deregister AMIs and delete associated snapshots
+    #   shell: >
+    #     aws ec2 deregister-image --region {{ region }} --image-id {{ item }} &&
+    #     Snapshots="$(aws ec2 describe-images --image-ids {{ item }} --region {{ region }} --query 'Images[*].BlockDeviceMappings[*].Ebs.SnapshotId' --output text)" &&
+    #     for SNAPSHOT in $Snapshots; do aws ec2 delete-snapshot --region {{ region }} --snapshot-id $SNAPSHOT; done
+    #   with_items: "{{ ami_ids.stdout_lines }}"
+      
+    - name: Create new AMI
+      shell: >
+        aws ec2 create-image --region {{ region }} --instance-id {{ instance_id }} --name "{{ ami_name }}" --description "{{ ami_description }}" --tag-specifications 'ResourceType=image,Tags=[{Key=Owner,Value="{{ owner }}"}]' --query 'ImageId' --output text
+      register: new_ami_id
+      changed_when: False
+
+    - name: Wait for new AMI to be available
+      shell: >
+        aws ec2 wait image-available --region {{ region }} --image-ids {{ new_ami_id.stdout }}
+      register: ami_wait
+      changed_when: False
+
+    - name: Update Launch template with new AMI
+      shell: >
+        aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\", \"InstanceType\":\"t2.micro\"}"
+      register: lt_version
+      changed_when: False
+    # - name: Update Launch template with new AMI
+    #   shell: >
+    #     aws ec2 create-launch-template-version --region {{ region }} --launch-template-name {{ lt_name }} --version-description "Version with new AMI" --launch-template-data "{\"ImageId\":\"{{ new_ami_id.stdout }}\"}"
+    #   register: lt_version
+    #   changed_when: False
+      
+    - name: Get latest version of Launch template
+      shell: >
+        aws ec2 describe-launch-templates --region {{ region }} --launch-template-names {{ lt_name }} --query 'LaunchTemplates[0].LatestVersionNumber' --output text
+      register: lt_latest_version
+      changed_when: False
+
+
+    - name: Update AutoScaling group
+      shell: >
+        aws autoscaling update-auto-scaling-group --region {{ region }} --auto-scaling-group-name {{ asg_name }} --launch-template LaunchTemplateName={{ lt_name }},Version={{ lt_latest_version.stdout }}
+      
+    - name: Perform Instance auto-refresh
+      shell: >
+        aws autoscaling start-instance-refresh --region {{ region }} --auto-scaling-group-name {{ asg_name }} --preferences MinHealthyPercentage=50,InstanceWarmup=10
