@@ -13,7 +13,7 @@ public class Constants {
 	public static final String MEMBER_PARENT = "Parent";
 	public static final String MEMBER_STUDENT = "Student";
 	public static final String MEMBER_OTHER = "Other";
-	protected static final List<String> MEMBER_TYPES = new ArrayList<>(Arrays.asList(
+	public static final List<String> MEMBER_TYPES = new ArrayList<>(Arrays.asList(
 	    MEMBER_PARENT,
 	    MEMBER_STUDENT,
 	    MEMBER_OTHER
