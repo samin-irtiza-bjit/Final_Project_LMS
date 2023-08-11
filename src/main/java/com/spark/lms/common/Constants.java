@@ -1,6 +1,6 @@
 package com.spark.lms.common;
 
-import java.util.Arrays
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
 
