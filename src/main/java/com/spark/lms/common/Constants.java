@@ -11,11 +11,12 @@ public class Constants {
 	public static final String MEMBER_PARENT = "Parent";
 	public static final String MEMBER_STUDENT = "Student";
 	public static final String MEMBER_OTHER = "Other";
-	public static final List<String> MEMBER_TYPES = new ArrayList<String>() {{
-	    add(MEMBER_PARENT);
-	    add(MEMBER_STUDENT);
-	    add(MEMBER_OTHER);
-	}};
+	public static final List<String> MEMBER_TYPES = new ArrayList<>(Arrays.asList(
+	    MEMBER_PARENT,
+	    MEMBER_STUDENT,
+	    MEMBER_OTHER
+	));
+
 	
 	public static final Integer BOOK_STATUS_AVAILABLE = 1;
 	public static final Integer BOOK_STATUS_ISSUED = 2;
