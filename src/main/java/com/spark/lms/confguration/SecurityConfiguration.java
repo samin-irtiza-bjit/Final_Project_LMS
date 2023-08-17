@@ -64,7 +64,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 headers
                     .contentSecurityPolicy(contentSecurityPolicy ->
                         contentSecurityPolicy
-                            .policyDirectives("script-src 'self' 192.168.56.104; object-src 192.168.56.104; report-uri /csp-report-endpoint/")
+                            .policyDirectives("script-src 'self' http://192.168.56.104; object-src http://192.168.56.104; report-uri /csp-report-endpoint/")
                     )
             );
     }
