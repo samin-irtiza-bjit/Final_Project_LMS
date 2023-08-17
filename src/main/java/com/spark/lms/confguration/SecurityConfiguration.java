@@ -56,7 +56,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/").and().exceptionHandling()
                 .accessDeniedPage("/access-denied");
     }
-
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            // Other security configurations
+            .headers(headers ->
+                headers
+                    .contentSecurityPolicy(contentSecurityPolicy ->
+                        contentSecurityPolicy
+                            .policyDirectives("script-src 'self' 192.168.56.104; object-src 192.168.56.104; report-uri /csp-report-endpoint/")
+                    )
+            );
+    }
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
