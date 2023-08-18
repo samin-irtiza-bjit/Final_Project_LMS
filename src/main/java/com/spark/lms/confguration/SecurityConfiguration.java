@@ -56,7 +56,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/").and().exceptionHandling()
                 .accessDeniedPage("/access-denied");
         // http.headers().contentSecurityPolicy("script-src 'self' http://192.168.56.104 http://localhost; object-src http://192.168.56.104 http://localhost; report-uri /csp-report-endpoint/");
-        http.headers().contentSecurityPolicy("script-src 'self' http://localhost http://192.168.56.104");
+        http.headers().contentSecurityPolicy("default-src 'self'; frame-ancestors 'self'; form-action 'self'; script-src 'self'");
+
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
