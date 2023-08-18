@@ -10,7 +10,7 @@
 	<title>BJIT LMS - Login</title>
 	
 	<th:block th:replace="fragments/styles :: common"></th:block>
-	
+
 </head>
 <body class="login">
     <div>
@@ -26,7 +26,7 @@
                 <input type="password" class="form-control" placeholder="Password" name="password" />
               </div>
               <div>
-                <a class="btn btn-default submit" href="javascript:void(0)" onclick="document.getElementById('loginform').submit();">Log in</a>
+                <a class="btn btn-default submit" id="loginButton">Log in</a>
               </div>
 
               <div class="clearfix"></div>
@@ -44,6 +44,7 @@
           </section>
         </div>
       </div>
-      
+    <th:block th:replace="fragments/scripts :: common"></th:block>
+    <script th:src="@{/custom/js/login.js}"></script>
   </body>
 </html>
